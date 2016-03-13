@@ -1,9 +1,14 @@
 package pong;
 
+// FALTA implementar de fato as outras classes. ainda é só um pong normal
+
+import pong.Outros.Renderizador;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,6 +18,7 @@ import java.util.Random;
 
 import javax.swing.JFrame;
 import javax.swing.Timer;
+import pong.Outros.Configuracao;
 
 public class Pong implements ActionListener, KeyListener {
 
@@ -20,7 +26,7 @@ public class Pong implements ActionListener, KeyListener {
     
     public final static Random R = new Random();
 
-    public int largura = 700, altura = 700;
+    public int largura = Configuracao.LARGURA_TELA, altura = Configuracao.ALTURA_TELA;
 
     public Renderizador renderizador;
 
@@ -121,6 +127,14 @@ public class Pong implements ActionListener, KeyListener {
 
         bola.atualizarBola(jogador1, jogador2);
     }
+    
+    // escreve o texto centralizado
+    private void escreveTexto(Graphics2D g, String texto, int x, int y){
+        int comprimento = (int)
+            g.getFontMetrics().getStringBounds(texto, g).getWidth();
+        int inicio = largura/2 - comprimento/2;
+        g.drawString(texto, inicio + x, y);
+ }
 
     public void renderizarPong(Graphics2D g) {
         g.setColor(Color.BLACK);
@@ -130,31 +144,28 @@ public class Pong implements ActionListener, KeyListener {
         if (status_jogo == 0) {
             g.setColor(Color.WHITE);
             g.setFont(new Font("Arial", 1, 50));
-
-            g.drawString("PONG", largura / 2 - 75, 50);
+            escreveTexto(g, "PONG", 0, 50);
 
             if (!seleciona_dificuldade) {
                 g.setFont(new Font("Arial", 1, 30));
-
-                g.drawString("Press Space to Play", largura / 2 - 150, altura / 2 - 25);
-                g.drawString("Press Shift to Play with Bot", largura / 2 - 200, altura / 2 + 25);
-                g.drawString("<< Score Limit: " + limite_score + " >>", largura / 2 - 150, altura / 2 + 75);
+                escreveTexto(g, "Pressione Espaço para jogar 2 pessoas", 0, altura / 2 - 25);
+                escreveTexto(g, "Pressione shift para jogar com AI", 0, altura / 2 + 25);
+                escreveTexto(g, "<< Limite de pontos: " + limite_score + " >>", 0, altura / 2 + 75);
             }
         }
 
         if (seleciona_dificuldade) {
-            String string = dificuldade_ai == 0 ? "Easy" : (dificuldade_ai == 1 ? "Medium" : "Hard");
+            String string = dificuldade_ai == 0 ? "Fácil" : (dificuldade_ai == 1 ? "Médio" : "Difícil");
 
             g.setFont(new Font("Arial", 1, 30));
-
-            g.drawString("<< Bot Difficulty: " + string + " >>", largura / 2 - 180, altura / 2 - 25);
-            g.drawString("Press Space to Play", largura / 2 - 150, altura / 2 + 25);
+            escreveTexto(g, "<< Dificuldade AI: " + string + " >>" , 0, altura / 2 - 25);
+            escreveTexto(g, "Pressione Espaço para jogar" , 0, altura / 2 + 25);
         }
 
         if (status_jogo == 1) {
             g.setColor(Color.WHITE);
             g.setFont(new Font("Arial", 1, 50));
-            g.drawString("PAUSED", largura / 2 - 103, altura / 2 - 25);
+            escreveTexto(g, "PAUSA", 0, altura / 2);
         }
 
         if (status_jogo == 1 || status_jogo == 2) {
@@ -181,19 +192,18 @@ public class Pong implements ActionListener, KeyListener {
         if (status_jogo == 3) {
             g.setColor(Color.WHITE);
             g.setFont(new Font("Arial", 1, 50));
-
-            g.drawString("PONG", largura / 2 - 75, 50);
+            
+            escreveTexto(g, "PONG", 0, 50);
 
             if (ai && jogador_venceu == 2) {
-                g.drawString("The Bot Wins!", largura / 2 - 170, 200);
+                escreveTexto(g, "O AI ganhou!", 0, altura / 2);
             } else {
-                g.drawString("Player " + jogador_venceu + " Wins!", largura / 2 - 165, 200);
+                escreveTexto(g, "Jogador " + jogador_venceu + " ganhou!", 0, altura / 2); // ou 200
             }
 
             g.setFont(new Font("Arial", 1, 30));
-
-            g.drawString("Press Space to Play Again", largura / 2 - 185, altura / 2 - 25);
-            g.drawString("Press ESC for Menu", largura / 2 - 140, altura / 2 + 25);
+            escreveTexto(g, "Pressione Espaço para jogar de novo", 0, altura - 75);
+            escreveTexto(g, "Pressione ESC para retornar ao Menu", 0, altura - 25);
         }
     }
 

@@ -1,9 +1,10 @@
-package pong;
+package pong.Outros;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
 import javax.swing.JPanel;
+import pong.Pong;
 
 public class Renderizador extends JPanel {
 

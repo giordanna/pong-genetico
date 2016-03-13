@@ -3,10 +3,11 @@ package pong;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.Random;
+import pong.Outros.Configuracao;
 
 public class Bola {
 
-    private int x, y, largura = 20, altura = 20;
+    private int x, y, largura = Configuracao.BOLA_RAIO, altura = largura;
 
     private int movimentoX, movimentoY;
 
@@ -22,6 +23,8 @@ public class Bola {
         criar();
     }
     
+    // gets
+    
     public int getY() { return y; }
     
     public int getX() { return x; }
@@ -29,6 +32,10 @@ public class Bola {
     public int getAltura() { return altura; }
     
     public int getLargura() { return largura; }
+    
+    public int getMovimentoX() { return movimentoX; }
+    
+    public int getMovimentoY() { return movimentoY; }
 
     public void atualizarBola(Raquete raquete1, Raquete raquete2) {
         int velocidade = 5;

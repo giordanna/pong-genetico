@@ -2,12 +2,12 @@ package pong;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import pong.Outros.Configuracao;
 
 public class Raquete {
 
-    private int numero_raquete;
-
-    private int x, y, largura = 25, altura = 150;
+    private final int numero_raquete, largura = Configuracao.RAQUETE_LARGURA, altura = Configuracao.RAQUETE_ALTURA;
+    private int x, y;
 
     private int score;
 
