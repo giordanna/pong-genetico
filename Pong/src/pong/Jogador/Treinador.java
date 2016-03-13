@@ -55,7 +55,7 @@ public class Treinador implements IJogador {
     }
     
     @Override
-    public double calculaVelocidade(Raquete minha, Raquete oponente, Bola bola){
+    public int calculaVelocidade(Raquete minha, Raquete oponente, Bola bola){
         if (bola.getMovimentoX() == 0 && bola.getMovimentoY() == 0)
             return retornaInicio(minha);
         
@@ -117,7 +117,7 @@ public class Treinador implements IJogador {
         // ordena a população para os melhores
         Arrays.sort(populacao);
         
-        // substuituir uma porcentagem da população (padrão = 75%);
+        // substuituir uma porcentagem da população (padrão = 50%);
         int substituir = (int) (Configuracao.MAX_POPULACAO * Configuracao.PORCENTAGEM_SUBSTITUIR);
         
         // caso coloquem valores muito baixos na porcentagem
@@ -126,7 +126,7 @@ public class Treinador implements IJogador {
         int j = 0;
         int outro;
         
-        // insere nos 3/4 da população os filhos gerados pelos melhores + individuo aleatório
+        // insere nos 50% da população os filhos gerados pelos melhores + individuo aleatório
         // to do: refazer
         for (int i = Configuracao.MAX_POPULACAO - substituir ; i < Configuracao.MAX_POPULACAO ; i++){
             // para que não escolha o mesmo indivíduo

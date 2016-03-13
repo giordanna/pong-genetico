@@ -9,7 +9,7 @@ import pong.Raquete;
 public class AIBasico implements IJogador {
 
     @Override
-    public double calculaVelocidade(Raquete minha, Raquete oponente, Bola bola) {
+    public int calculaVelocidade(Raquete minha, Raquete oponente, Bola bola) {
         return Configuracao.MAX_VELOCIDADE_RAQUETE * 
                 ((bola.getY() - minha.getY() - minha.getAltura() / 2) < 0 ? -1 : 1);
     }

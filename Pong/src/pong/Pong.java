@@ -288,7 +288,5 @@ public class Pong implements ActionListener, KeyListener {
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {
-
-    }
+    public void keyTyped(KeyEvent e) {}
 }

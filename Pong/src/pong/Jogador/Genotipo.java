@@ -39,8 +39,8 @@ public class Genotipo implements Comparable<Genotipo>{
     
     // valida velocidade y da raquete
     // retorna velocidade da raquete
-    public double validaVelocidade(Raquete jogador, Raquete oponente, Bola bola){
-        return gene[0] * bola.getMovimentoY() + gene[1] * bola.getY() + gene[2] * jogador.getY();
+    public int validaVelocidade(Raquete jogador, Raquete oponente, Bola bola){
+        return (int) (gene[0] * bola.getMovimentoY() + gene[1] * bola.getY() + gene[2] * jogador.getY());
     }
     
     // retorna um genótipo aleatório

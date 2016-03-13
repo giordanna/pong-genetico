@@ -38,7 +38,7 @@ public class Bola {
     public int getMovimentoY() { return movimentoY; }
 
     public void atualizarBola(Raquete raquete1, Raquete raquete2) {
-        int velocidade = 5;
+        int velocidade = Configuracao.MAX_VELOCIDADE_BOLA;
 
         this.x += movimentoX * velocidade;
         this.y += movimentoY * velocidade;
@@ -68,15 +68,20 @@ public class Bola {
             if (movimentoY == 0) {
                 movimentoY = 1;
             }
+            
+            //verificaGrau(raquete1);
 
             quantidade_colisoes++;
         } else if (verificaColisao(raquete2) == 1) {
             this.movimentoX = -1 - (quantidade_colisoes / 5);
             this.movimentoY = -2 + R.nextInt(4);
+            
 
             if (movimentoY == 0) {
                 movimentoY = 1;
             }
+            
+            //verificaGrau(raquete2);
 
             quantidade_colisoes++;
         }
@@ -116,6 +121,14 @@ public class Bola {
         }
 
         return 0; //nothing
+    }
+    
+    // ao acertar a raquete, verificar a velocidade do movimento Y da bola
+    public void verificaGrau(Raquete raquete){
+        // quanto mais longe do centro da raquete, maior a velocidade Y
+        int velocidade = this.y - raquete.getY() - raquete.getAltura() / 2;
+        
+        this.movimentoY += Configuracao.RAQUETE_INCLINACAO * velocidade;
     }
 
     public void renderizarBola(Graphics g) {

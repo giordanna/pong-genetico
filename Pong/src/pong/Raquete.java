@@ -46,12 +46,36 @@ public class Raquete {
         g.fillRect(x, y, largura, altura);
     }
 
+    // implementação antiga, mais voltada pro jogador humano
     public void mover(boolean cima) {
-        int velocidade = 15;
+        int velocidade = Configuracao.MAX_VELOCIDADE_RAQUETE;
 
         if (cima) {
             if (y - velocidade > 0) {
                 y -= velocidade;
+            } else {
+                y = 0;
+            }
+        } else if (y + altura + velocidade < Pong.pong.altura) {
+            y += velocidade;
+        } else {
+            y = Pong.pong.altura - altura;
+        }
+    }
+    
+    int determinaLimite(int valor, int min, int max) {
+        return Math.min(Math.max(valor, min), max);
+    }
+    
+    // TESTAR
+    public void mover(int velocidade) {
+        this.y = determinaLimite(y, 0, Configuracao.ALTURA_TELA - this.altura);
+        velocidade = determinaLimite(velocidade, -Configuracao.MAX_VELOCIDADE_RAQUETE, Configuracao.MAX_VELOCIDADE_RAQUETE);
+
+
+        if (velocidade < 0) {
+            if (y + velocidade > 0) {
+                y += velocidade;
             } else {
                 y = 0;
             }
