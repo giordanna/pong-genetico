@@ -10,7 +10,7 @@ public class AIPerfeito implements IJogador {
     
 
     @Override
-    public int calculaVelocidade(Raquete minha, Raquete oponente, Bola bola) {
+    public int verificaDirecao(Raquete minha, Raquete oponente, Bola bola) {
         int bola_y = bola.getY();
         int bola_velocidade = Math.abs(bola.getMovimentoX());
         

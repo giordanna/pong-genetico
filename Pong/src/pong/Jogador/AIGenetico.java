@@ -16,7 +16,7 @@ public class AIGenetico implements IJogador {
     }
 
     @Override
-    public int calculaVelocidade(Raquete minha, Raquete oponente, Bola bola) {
+    public int verificaDirecao(Raquete minha, Raquete oponente, Bola bola) {
         // se ainda não foi iniciada
         if (posicao_inicial == Integer.MAX_VALUE)
             posicao_inicial = minha.getY();

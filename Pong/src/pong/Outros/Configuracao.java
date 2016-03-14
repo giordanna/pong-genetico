@@ -5,6 +5,8 @@ public class Configuracao {
     // todo fazer input
     public static MersenneTwisterFast R = new MersenneTwisterFast();
     
+    public static String FONTE = "Courier New";
+    
     public static int LARGURA_TELA = 800;
     public static int ALTURA_TELA = 600;
     

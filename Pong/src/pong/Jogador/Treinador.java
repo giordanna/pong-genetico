@@ -55,7 +55,7 @@ public class Treinador implements IJogador {
     }
     
     @Override
-    public int calculaVelocidade(Raquete minha, Raquete oponente, Bola bola){
+    public int verificaDirecao(Raquete minha, Raquete oponente, Bola bola){
         if (bola.getMovimentoX() == 0 && bola.getMovimentoY() == 0)
             return retornaInicio(minha);
         

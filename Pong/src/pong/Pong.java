@@ -1,6 +1,7 @@
 package pong;
 
 // FALTA implementar de fato as outras classes. ainda é só um pong normal
+// o jogo em si
 
 import pong.Outros.Renderizador;
 import java.awt.BasicStroke;
@@ -16,6 +17,7 @@ import java.util.Random;
 
 import javax.swing.JFrame;
 import javax.swing.Timer;
+import pong.Jogador.IJogador;
 import pong.Outros.Configuracao;
 
 public class Pong implements ActionListener, KeyListener {
@@ -28,7 +30,9 @@ public class Pong implements ActionListener, KeyListener {
 
     public Renderizador renderizador;
 
-    public Raquete jogador1, jogador2;
+    public Raquete raquete1, raquete2; // independentes
+    
+    public IJogador jogador1, jogador2;
 
     public Bola bola;
 
@@ -46,7 +50,7 @@ public class Pong implements ActionListener, KeyListener {
         
         Timer timer = new Timer(20, this);
 
-        jframe = new JFrame("Pong");
+        jframe = new JFrame("Pong Genético");
 
         renderizador = new Renderizador();
 
@@ -61,35 +65,35 @@ public class Pong implements ActionListener, KeyListener {
 
     public void inicializarPong() {
         status_jogo = 2;
-        jogador1 = new Raquete(this, 1);
-        jogador2 = new Raquete(this, 2);
+        raquete1 = new Raquete(this, 1);
+        raquete2 = new Raquete(this, 2);
         bola = new Bola(this);
     }
 
     public void atualizarPong() {
-        if (jogador1.getScore() >= limite_score) {
+        if (raquete1.getScore() >= limite_score) {
             jogador_venceu = 1;
             status_jogo = 3;
         }
 
-        if (jogador2.getScore() >= limite_score) {
+        if (raquete2.getScore() >= limite_score) {
             status_jogo = 3;
             jogador_venceu = 2;
         }
 
         if (w) {
-            jogador1.mover(true);
+            raquete1.mover(true);
         }
         if (s) {
-            jogador1.mover(false);
+            raquete1.mover(false);
         }
 
         if (!ai) {
             if (cima) {
-                jogador2.mover(true);
+                raquete2.mover(true);
             }
             if (baixo) {
-                jogador2.mover(false);
+                raquete2.mover(false);
             }
         } else {
             if (ai_cooldown > 0) {
@@ -101,13 +105,13 @@ public class Pong implements ActionListener, KeyListener {
             }
 
             if (movimentos_ai < 10) {
-                if (jogador2.getY() + jogador2.getAltura() / 2 < bola.getY()) {
-                    jogador2.mover(false);
+                if (raquete2.getY() + raquete2.getAltura() / 2 < bola.getY()) {
+                    raquete2.mover(false);
                     movimentos_ai++;
                 }
 
-                if (jogador2.getY() + jogador2.getAltura() / 2 > bola.getY()) {
-                    jogador2.mover(true);
+                if (raquete2.getY() + raquete2.getAltura() / 2 > bola.getY()) {
+                    raquete2.mover(true);
                     movimentos_ai++;
                 }
 
@@ -123,7 +127,7 @@ public class Pong implements ActionListener, KeyListener {
             }
         }
 
-        bola.atualizarBola(jogador1, jogador2);
+        bola.atualizarBola(raquete1, raquete2);
     }
     
     // escreve o texto centralizado
@@ -141,11 +145,11 @@ public class Pong implements ActionListener, KeyListener {
 
         if (status_jogo == 0) {
             g.setColor(Color.WHITE);
-            g.setFont(new Font("Arial", 1, 50));
-            escreveTexto(g, "PONG", 0, 50);
+            g.setFont(new Font(Configuracao.FONTE, 1, 50));
+            escreveTexto(g, "PONG GENÉTICO", 0, 50);
 
             if (!seleciona_dificuldade) {
-                g.setFont(new Font("Arial", 1, 30));
+                g.setFont(new Font(Configuracao.FONTE, 1, 30));
                 escreveTexto(g, "Pressione Espaço para jogar 2 pessoas", 0, altura / 2 - 25);
                 escreveTexto(g, "Pressione shift para jogar com AI", 0, altura / 2 + 25);
                 escreveTexto(g, "<< Limite de pontos: " + limite_score + " >>", 0, altura / 2 + 75);
@@ -155,14 +159,14 @@ public class Pong implements ActionListener, KeyListener {
         if (seleciona_dificuldade) {
             String string = dificuldade_ai == 0 ? "Fácil" : (dificuldade_ai == 1 ? "Médio" : "Difícil");
 
-            g.setFont(new Font("Arial", 1, 30));
+            g.setFont(new Font(Configuracao.FONTE, 1, 30));
             escreveTexto(g, "<< Dificuldade AI: " + string + " >>" , 0, altura / 2 - 25);
             escreveTexto(g, "Pressione Espaço para jogar" , 0, altura / 2 + 25);
         }
 
         if (status_jogo == 1) {
             g.setColor(Color.WHITE);
-            g.setFont(new Font("Arial", 1, 50));
+            g.setFont(new Font(Configuracao.FONTE, 1, 50));
             escreveTexto(g, "PAUSA", 0, altura / 2);
         }
 
@@ -173,23 +177,23 @@ public class Pong implements ActionListener, KeyListener {
 
             g.drawLine(largura / 2, 0, largura / 2, altura);
 
-            g.setStroke(new BasicStroke(2f));
+            g.setStroke(new BasicStroke(5f));
 
             g.drawOval(largura / 2 - 150, altura / 2 - 150, 300, 300);
 
-            g.setFont(new Font("Arial", 1, 50));
+            g.setFont(new Font(Configuracao.FONTE, 1, 50));
 
-            g.drawString(String.valueOf(jogador1.getScore()), largura / 2 - 90, 50);
-            g.drawString(String.valueOf(jogador2.getScore()), largura / 2 + 65, 50);
+            g.drawString(String.valueOf(raquete1.getScore()), largura / 2 - 90, 50);
+            g.drawString(String.valueOf(raquete2.getScore()), largura / 2 + 65, 50);
 
-            jogador1.renderizarRaquete(g);
-            jogador2.renderizarRaquete(g);
+            raquete1.renderizarRaquete(g);
+            raquete2.renderizarRaquete(g);
             bola.renderizarBola(g);
         }
 
         if (status_jogo == 3) {
             g.setColor(Color.WHITE);
-            g.setFont(new Font("Arial", 1, 50));
+            g.setFont(new Font(Configuracao.FONTE, 1, 50));
             
             escreveTexto(g, "PONG", 0, 50);
 
@@ -199,7 +203,7 @@ public class Pong implements ActionListener, KeyListener {
                 escreveTexto(g, "Jogador " + jogador_venceu + " ganhou!", 0, altura / 2); // ou 200
             }
 
-            g.setFont(new Font("Arial", 1, 30));
+            g.setFont(new Font(Configuracao.FONTE, 1, 30));
             escreveTexto(g, "Pressione Espaço para jogar de novo", 0, altura - 75);
             escreveTexto(g, "Pressione ESC para retornar ao Menu", 0, altura - 25);
         }
