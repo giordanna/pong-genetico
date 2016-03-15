@@ -1,9 +1,6 @@
 package pong;
 
-// FALTA implementar de fato as outras classes. ainda é só um pong normal
-// o jogo em si
-
-import pong.Outros.Renderizador;
+// copia do pong.java onde está sendo executado testes
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -14,39 +11,60 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Random;
-
 import javax.swing.JFrame;
 import javax.swing.Timer;
+import pong.Jogador.*;
 import pong.Jogador.IJogador;
+import static pong.Pong.Status.*;
 import pong.Outros.Configuracao;
+import pong.Outros.Renderizador;
 
 public class Pong implements ActionListener, KeyListener {
 
+    public JFrame jframe;
+    public Renderizador renderizador;
+    
     public static Pong pong;
+    
+    // dimensões da tela
+    public int largura = Configuracao.LARGURA_TELA, altura = Configuracao.ALTURA_TELA;
     
     public final static Random R = new Random();
 
-    public int largura = Configuracao.LARGURA_TELA, altura = Configuracao.ALTURA_TELA;
-
-    public Renderizador renderizador;
-
-    public Raquete raquete1, raquete2; // independentes
+    public Raquete raquete_esquerda, raquete_direita; // independentes
     
-    public IJogador jogador1, jogador2;
+    public IJogador jogador_esquerda, jogador_direita; // os que vão ser usados de fato
+    
+    public IJogador instancias_esquerda[]; // humano, ai basico, ai perfeito, ai genético, treinador
+    public IJogador instancias_direita[]; // humano, ai basico, ai perfeito, ai genético, treinador
 
     public Bola bola;
 
-    public boolean ai = false, seleciona_dificuldade;
-
+    public boolean seleciona_jogador_esquerda = true;
+    
+    // botões pros humanos usarem
     public boolean w, s, cima, baixo;
 
-    public int status_jogo = 0, limite_score = 7, jogador_venceu; //0 = Menu, 1 = Paused, 2 = Playing, 3 = Over
-
-    public int dificuldade_ai, movimentos_ai, ai_cooldown = 0;
-
-    public JFrame jframe;
+    // enum com Menu, Pausado, Jogando (não existe limite)
+    public Status status_jogo = Menu;
+    
+    // humano = 0, ai basico = 1, ai perfeito = 2, ai genético = 3, treinador = 4
+    public int opcao_jogador_esquerda = 0, opcao_jogador_direita = 0;
 
     public Pong() {
+        instancias_esquerda = new IJogador[5];
+        instancias_esquerda[0] = new Humano(KeyEvent.VK_W, KeyEvent.VK_S);
+        instancias_esquerda[1] = new AIBasico();
+        instancias_esquerda[2] = new AIPerfeito();
+        instancias_esquerda[3] = new AIGenetico(Genotipo.genotipoAleatorio(0, 0));
+        instancias_esquerda[4] = new Treinador();
+        
+        instancias_direita = new IJogador[5];
+        instancias_direita[0] = new Humano(KeyEvent.VK_UP, KeyEvent.VK_DOWN);
+        instancias_direita[1] = new AIBasico();
+        instancias_direita[2] = new AIPerfeito();
+        instancias_direita[3] = new AIGenetico(Genotipo.genotipoAleatorio(0, 0));
+        instancias_direita[4] = new Treinador();
         
         Timer timer = new Timer(20, this);
 
@@ -62,72 +80,17 @@ public class Pong implements ActionListener, KeyListener {
 
         timer.start();
     }
-
-    public void inicializarPong() {
-        status_jogo = 2;
-        raquete1 = new Raquete(this, 1);
-        raquete2 = new Raquete(this, 2);
-        bola = new Bola(this);
+    
+    public enum Status {
+        Menu, Pausado, Jogando;
     }
 
-    public void atualizarPong() {
-        if (raquete1.getScore() >= limite_score) {
-            jogador_venceu = 1;
-            status_jogo = 3;
-        }
-
-        if (raquete2.getScore() >= limite_score) {
-            status_jogo = 3;
-            jogador_venceu = 2;
-        }
-
-        if (w) {
-            raquete1.mover(true);
-        }
-        if (s) {
-            raquete1.mover(false);
-        }
-
-        if (!ai) {
-            if (cima) {
-                raquete2.mover(true);
-            }
-            if (baixo) {
-                raquete2.mover(false);
-            }
-        } else {
-            if (ai_cooldown > 0) {
-                ai_cooldown--;
-
-                if (ai_cooldown == 0) {
-                    movimentos_ai = 0;
-                }
-            }
-
-            if (movimentos_ai < 10) {
-                if (raquete2.getY() + raquete2.getAltura() / 2 < bola.getY()) {
-                    raquete2.mover(false);
-                    movimentos_ai++;
-                }
-
-                if (raquete2.getY() + raquete2.getAltura() / 2 > bola.getY()) {
-                    raquete2.mover(true);
-                    movimentos_ai++;
-                }
-
-                if (dificuldade_ai == 0) {
-                    ai_cooldown = 20;
-                }
-                if (dificuldade_ai == 1) {
-                    ai_cooldown = 15;
-                }
-                if (dificuldade_ai == 2) {
-                    ai_cooldown = 10;
-                }
-            }
-        }
-
-        bola.atualizarBola(raquete1, raquete2);
+    public void inicializarPong() {
+        status_jogo = Jogando;
+        raquete_esquerda = new Raquete(pong, 1);
+        raquete_direita = new Raquete(pong, 2);
+        
+        bola = new Bola(pong);
     }
     
     // escreve o texto centralizado
@@ -137,91 +100,156 @@ public class Pong implements ActionListener, KeyListener {
         int inicio = largura/2 - comprimento/2;
         g.drawString(texto, inicio + x, y);
  }
+    
+    public void modoMenu(Graphics2D g){
+        
+        String[] string = {"Humano", "AI Básico", "AI Perfeito", "AI Genético", "AI Treinador"};
+        if (status_jogo == Menu) {
+            g.setColor(Color.WHITE);
+            g.setFont(new Font(Configuracao.FONTE, Font.BOLD, 50));
+            escreveTexto(g, "PONG GENÉTICO", 0, 50);
+
+            if (seleciona_jogador_esquerda) {
+                
+                g.setFont(new Font(Configuracao.FONTE, Font.BOLD, 30));
+                escreveTexto(g, "← Jogador 1: " + string[opcao_jogador_esquerda] + " →" , 0, altura / 2 - 25);
+                                
+                g.setFont(new Font(Configuracao.FONTE, Font.PLAIN, 30));
+                escreveTexto(g, "Jogador 2: " + string[opcao_jogador_direita] , 0, altura / 2 + 25);
+                escreveTexto(g, "Pressione Espaço para jogar" , 0, altura / 2 + 75);
+
+                g.setFont(new Font(Configuracao.FONTE, Font.BOLD, 50));
+                g.drawString("↑↓" , 10, altura / 2);
+            }
+            
+            if (!seleciona_jogador_esquerda) {
+
+                g.setFont(new Font(Configuracao.FONTE, Font.PLAIN, 30));
+                escreveTexto(g, "Jogador 1: " + string[opcao_jogador_esquerda], 0, altura / 2 - 25);
+                escreveTexto(g, "Pressione Espaço para jogar" , 0, altura / 2 + 75);
+
+                g.setFont(new Font(Configuracao.FONTE, Font.BOLD, 30));
+                escreveTexto(g, "← Jogador 2: " + string[opcao_jogador_direita] + " →" , 0, altura / 2 + 25);
+
+                g.setFont(new Font(Configuracao.FONTE, Font.BOLD, 50));
+                g.drawString("↑↓" , 10, altura / 2);
+            }
+        }
+    }
+    
+    public void modoPausado(Graphics2D g){
+        if (status_jogo == Pausado) {
+            g.setColor(Color.WHITE);
+            g.setFont(new Font(Configuracao.FONTE, 1, 50));
+            escreveTexto(g, "PAUSA", 0, altura / 2);
+        }
+    }
+    
+    public void modoJogando(Graphics2D g){
+        // porque também tem que mostrar o fundo quando o jogo tá pausado
+        if (status_jogo == Pausado || status_jogo == Jogando) {
+            g.setColor(Color.WHITE);
+
+            g.setStroke(new BasicStroke(5f));
+
+            // faz a linha do meio
+            g.drawLine(largura / 2, 0, largura / 2, altura);
+
+            g.setStroke(new BasicStroke(5f));
+
+            // faz o círculo do meio
+            g.drawOval(largura / 2 - 150, altura / 2 - 150, 300, 300);
+
+            g.setFont(new Font(Configuracao.FONTE, 1, 50));
+
+            // faz a pontuação
+            g.drawString(String.valueOf(raquete_esquerda.getScore()), largura / 2 - 90, 50);
+            g.drawString(String.valueOf(raquete_direita.getScore()), largura / 2 + 65, 50);
+            
+            // aqui que acontece a mágica das raquetes e da bola
+            raquete_esquerda.renderizarRaquete(g);
+            raquete_direita.renderizarRaquete(g);
+            bola.renderizarBola(g);
+        }
+    }
 
     public void renderizarPong(Graphics2D g) {
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, largura, altura);
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        
+        modoMenu(g);
+        modoJogando(g);
+        modoPausado(g);
+    }
+    
+    public void atualizaInstancias(){
+        jogador_esquerda = instancias_esquerda[opcao_jogador_esquerda];
+        jogador_direita = instancias_direita[opcao_jogador_direita];
+        
+        if (opcao_jogador_esquerda == 3) // AI genético
+            jogador_esquerda = new AIGenetico(((Treinador) instancias_esquerda[4]).melhorGenotipo());
+        if (opcao_jogador_direita == 3) // AI genético
+            jogador_direita = new AIGenetico(((Treinador) instancias_direita[4]).melhorGenotipo());
+    }
+    
+    // to do: mexer nisso aqui
+    public void atualizarPong() {
+        
+        int ponto;
 
-        if (status_jogo == 0) {
-            g.setColor(Color.WHITE);
-            g.setFont(new Font(Configuracao.FONTE, 1, 50));
-            escreveTexto(g, "PONG GENÉTICO", 0, 50);
-
-            if (!seleciona_dificuldade) {
-                g.setFont(new Font(Configuracao.FONTE, 1, 30));
-                escreveTexto(g, "Pressione Espaço para jogar 2 pessoas", 0, altura / 2 - 25);
-                escreveTexto(g, "Pressione shift para jogar com AI", 0, altura / 2 + 25);
-                escreveTexto(g, "<< Limite de pontos: " + limite_score + " >>", 0, altura / 2 + 75);
+        // humano esquerda
+        if (opcao_jogador_esquerda == 0){
+            if (w) {
+                raquete_esquerda.mover(true);
+            }
+            if (s) {
+                raquete_esquerda.mover(false);
             }
         }
-
-        if (seleciona_dificuldade) {
-            String string = dificuldade_ai == 0 ? "Fácil" : (dificuldade_ai == 1 ? "Médio" : "Difícil");
-
-            g.setFont(new Font(Configuracao.FONTE, 1, 30));
-            escreveTexto(g, "<< Dificuldade AI: " + string + " >>" , 0, altura / 2 - 25);
-            escreveTexto(g, "Pressione Espaço para jogar" , 0, altura / 2 + 25);
+        else{ // então é AI
+            raquete_esquerda.mover(jogador_esquerda.verificaDirecao(
+                    raquete_esquerda, raquete_direita, bola));
         }
-
-        if (status_jogo == 1) {
-            g.setColor(Color.WHITE);
-            g.setFont(new Font(Configuracao.FONTE, 1, 50));
-            escreveTexto(g, "PAUSA", 0, altura / 2);
-        }
-
-        if (status_jogo == 1 || status_jogo == 2) {
-            g.setColor(Color.WHITE);
-
-            g.setStroke(new BasicStroke(5f));
-
-            g.drawLine(largura / 2, 0, largura / 2, altura);
-
-            g.setStroke(new BasicStroke(5f));
-
-            g.drawOval(largura / 2 - 150, altura / 2 - 150, 300, 300);
-
-            g.setFont(new Font(Configuracao.FONTE, 1, 50));
-
-            g.drawString(String.valueOf(raquete1.getScore()), largura / 2 - 90, 50);
-            g.drawString(String.valueOf(raquete2.getScore()), largura / 2 + 65, 50);
-
-            raquete1.renderizarRaquete(g);
-            raquete2.renderizarRaquete(g);
-            bola.renderizarBola(g);
-        }
-
-        if (status_jogo == 3) {
-            g.setColor(Color.WHITE);
-            g.setFont(new Font(Configuracao.FONTE, 1, 50));
-            
-            escreveTexto(g, "PONG", 0, 50);
-
-            if (ai && jogador_venceu == 2) {
-                escreveTexto(g, "O AI ganhou!", 0, altura / 2);
-            } else {
-                escreveTexto(g, "Jogador " + jogador_venceu + " ganhou!", 0, altura / 2); // ou 200
+        
+        // humano direita
+        if (opcao_jogador_direita == 0){
+            if (cima) {
+                raquete_direita.mover(true);
             }
+            if (baixo) {
+                raquete_direita.mover(false);
+            }
+        }
+        else{ // então é AI
+            raquete_direita.mover(jogador_direita.verificaDirecao(
+                    raquete_direita, raquete_esquerda, bola));
+        }
 
-            g.setFont(new Font(Configuracao.FONTE, 1, 30));
-            escreveTexto(g, "Pressione Espaço para jogar de novo", 0, altura - 75);
-            escreveTexto(g, "Pressione ESC para retornar ao Menu", 0, altura - 25);
+        ponto = bola.atualizarBola(raquete_esquerda, raquete_direita);
+        if (ponto != 0){
+            // se ponto = 1 (ou seja, esquerda marcou ponto), jogador esquerda recebe 1. se ponto = -1, jogador esquerda recebe -1
+            jogador_esquerda.resultado(ponto); // só tem efeito mesmo se for treinador
+            // se ponto = -1 (ou seja, direita marcou ponto), jogador direita recebe 1. se ponto = 1, jogador direita recebe -1
+            jogador_direita.resultado(-ponto); // só tem efeito mesmo se for treinador
         }
     }
 
+    // onde realiza o update dos frames
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (status_jogo == 2) {
+        if (status_jogo == Jogando) {
             atualizarPong();
         }
 
         renderizador.repaint();
     }
-
+ 
     public static void main(String[] args) {
         pong = new Pong();
     }
 
+    // o que fazer quando pressionar teclas
     @Override
     public void keyPressed(KeyEvent e) {
         int id = e.getKeyCode();
@@ -230,50 +258,65 @@ public class Pong implements ActionListener, KeyListener {
             w = true;
         } else if (id == KeyEvent.VK_S) {
             s = true;
-        } else if (id == KeyEvent.VK_UP) {
+        } else if (id == KeyEvent.VK_UP) { // quando pressionar seta pra cima
             cima = true;
-        } else if (id == KeyEvent.VK_DOWN) {
+            if (status_jogo == Menu) {
+                if (!seleciona_jogador_esquerda) seleciona_jogador_esquerda = true;
+            }
+        } else if (id == KeyEvent.VK_DOWN) { // quando pressionar seta pra baixo
             baixo = true;
-        } else if (id == KeyEvent.VK_RIGHT) {
-            if (seleciona_dificuldade) {
-                if (dificuldade_ai < 2) {
-                    dificuldade_ai++;
-                } else {
-                    dificuldade_ai = 0;
-                }
-            } else if (status_jogo == 0) {
-                limite_score++;
+            if (status_jogo == Menu) {
+                if (seleciona_jogador_esquerda) seleciona_jogador_esquerda = false;
             }
-        } else if (id == KeyEvent.VK_LEFT) {
-            if (seleciona_dificuldade) {
-                if (dificuldade_ai > 0) {
-                    dificuldade_ai--;
-                } else {
-                    dificuldade_ai = 2;
+        } else if (id == KeyEvent.VK_RIGHT) { // quando pressionar seta pra direita
+            if (status_jogo == Menu){
+                if (seleciona_jogador_esquerda) {
+                    if (opcao_jogador_esquerda < 4) {
+                        opcao_jogador_esquerda++;
+                    } else {
+                        opcao_jogador_esquerda = 0;
+                    }
                 }
-            } else if (status_jogo == 0 && limite_score > 1) {
-                limite_score--;
+                else{
+                    if (opcao_jogador_direita < 4) {
+                        opcao_jogador_direita++;
+                    } else {
+                        opcao_jogador_direita = 0;
+                    }
+                }
             }
-        } else if (id == KeyEvent.VK_ESCAPE && (status_jogo == 2 || status_jogo == 3)) {
-            status_jogo = 0;
-        } else if (id == KeyEvent.VK_SHIFT && status_jogo == 0) {
-            ai = true;
-            seleciona_dificuldade = true;
+        } else if (id == KeyEvent.VK_LEFT) { // quando pressionar seta pra esquerda
+            if (status_jogo == Menu){
+                if (seleciona_jogador_esquerda) {
+                    if (opcao_jogador_esquerda > 0) {
+                        opcao_jogador_esquerda--;
+                    } else {
+                        opcao_jogador_esquerda = 4;
+                    }
+                }
+                else{
+                    if (opcao_jogador_direita > 0) {
+                        opcao_jogador_direita--;
+                    } else {
+                        opcao_jogador_direita = 4;
+                    }
+                }
+            }
+        } else if (id == KeyEvent.VK_ESCAPE && (status_jogo == Jogando)) {
+            status_jogo = Menu;
         } else if (id == KeyEvent.VK_SPACE) {
-            if (status_jogo == 0 || status_jogo == 3) {
-                if (!seleciona_dificuldade) {
-                    ai = false;
-                } else {
-                    seleciona_dificuldade = false;
-                }
-
+            if (status_jogo == Menu){
+                // instâncias escolhidas
+                atualizaInstancias();
+                status_jogo = Jogando;
                 inicializarPong();
-            } else if (status_jogo == 1) {
-                status_jogo = 2;
-            } else if (status_jogo == 2) {
-                status_jogo = 1;
             }
-        }
+            
+            } else if (status_jogo == Pausado) {
+                status_jogo = Jogando;
+            } else if (status_jogo == Jogando) {
+                status_jogo = Pausado;
+            }
     }
 
     @Override

@@ -22,7 +22,7 @@ public class Configuracao {
     public static int RAQUETE_INCLINACAO = 3;
     
     public static int TAMANHO_CROMOSSOMO = 3;
-    public static int MAX_POPULACAO = 30;
+    public static int MAX_POPULACAO = 10;
     
     public static double INTERVALO_GENES = 1.5;
     public static double MUTACAO = 0.05;

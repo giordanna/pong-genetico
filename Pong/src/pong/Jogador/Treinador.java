@@ -72,7 +72,7 @@ public class Treinador implements IJogador {
         int fitness = 0;
         
         if (ponto > 0)
-            fitness = MAIOR_FITNESS;
+            fitness = MAIOR_FITNESS; // se marcou um ponto então ele é bom mesmo
         
         fitness += contraatacou;
         fitness += 480 - 3 * ultima_distancia;

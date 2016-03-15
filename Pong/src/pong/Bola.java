@@ -37,7 +37,7 @@ public class Bola {
     
     public int getMovimentoY() { return movimentoY; }
 
-    public void atualizarBola(Raquete raquete1, Raquete raquete2) {
+    public int atualizarBola(Raquete raquete1, Raquete raquete2) {
         int velocidade = Configuracao.MAX_VELOCIDADE_BOLA;
 
         this.x += movimentoX * velocidade;
@@ -89,10 +89,14 @@ public class Bola {
         if (verificaColisao(raquete1) == 2) {
             raquete2.atualizaScore();
             criar();
+            return 1; // jogador 1 marcou ponto
         } else if (verificaColisao(raquete2) == 2) {
             raquete1.atualizaScore();
             criar();
+            return -1; // jogador 2 marcou ponto
         }
+        
+        return 0;
     }
 
     public void criar() {
