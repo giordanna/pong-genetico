@@ -3,11 +3,11 @@
 25 // largura da raquete
 150 // altura da raquete
 20 // raio da bola
-15 // m·xima velocidade da raquete
-5 // m·xima velocidade da bola
-3 // inclinaÁ„o da raquete
+15 // m–±xima velocidade da raquete
+5 // m–±xima velocidade da bola
+3 // inclina–∑–≥o da raquete
 3 // tamanho do cromossomo
-30 // tamanho da populaÁ„o
-1.5 // intervalo entre cada gene
-5 // velocidade do programa (ainda n„o foi implementado)
-3 // rodadas que cada indivÌduo deve jogar (falta implementar)
+30 // tamanho da popula–∑–≥o
+1,5 // intervalo entre cada gene
+5 // velocidade do programa (ainda n–≥o foi implementado)
+3 // rodadas que cada indiv–Ωduo deve jogar (falta implementar)
