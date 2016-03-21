@@ -41,6 +41,10 @@ public class Raquete {
         score++;
     }
 
+    public void resetScore(){
+        score = 0;
+    }
+    
     public void renderizarRaquete(Graphics g) {
         g.setColor(Color.WHITE);
         g.fillRect(x, y, largura, altura);

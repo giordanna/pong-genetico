@@ -1,0 +1,13 @@
+800 // largura da tela
+600 // altura da terra
+25 // largura da raquete
+150 // altura da raquete
+20 // raio da bola
+15 // máxima velocidade da raquete
+5 // máxima velocidade da bola
+3 // inclinação da raquete
+3 // tamanho do cromossomo
+30 // tamanho da população
+1.5 // intervalo entre cada gene
+5 // velocidade do programa (ainda não foi implementado)
+3 // rodadas que cada indivíduo deve jogar (falta implementar)

@@ -65,14 +65,13 @@ public class Genotipo implements Comparable<Genotipo>{
     }
     
     // mutação do genótipo. para tentar escapar da solução subótima local
-    public void mutacao(){
-        double probabilidade;
+    public static Genotipo mutacao(Genotipo a){
+        Genotipo g = new Genotipo();
+        
         for (int i = 0 ; i < Configuracao.TAMANHO_CROMOSSOMO ; i++){
-            probabilidade = Configuracao.R.nextDouble(true,true);
-            if (probabilidade < Configuracao.MUTACAO){
-                gene[i] += Configuracao.DESVIO_MUTACAO * Configuracao.R.nextGaussian();
-            }
+                g.gene[i] = a.gene[i] + ( -0.1 + 0.2 * Configuracao.R.nextDouble());
         }
+        return g;
     }
     
     @Override

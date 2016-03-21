@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.Random;
 import pong.Outros.Configuracao;
+import pong.Outros.MersenneTwisterFast;
 
 public class Bola {
 
@@ -13,7 +14,7 @@ public class Bola {
 
     private Pong pong;
     
-    public final static Random R = new Random();
+    public final static MersenneTwisterFast R = new MersenneTwisterFast();
 
     private int quantidade_colisoes;
 
@@ -43,45 +44,41 @@ public class Bola {
         this.x += movimentoX * velocidade;
         this.y += movimentoY * velocidade;
 
+        // colisão com as paredes
         if (this.y + altura - movimentoY > pong.altura || this.y + movimentoY < 0) {
+            // parede de cima
             if (this.movimentoY < 0) {
                 this.y = 0;
-                this.movimentoY = R.nextInt(4);
+                //this.movimentoY = R.nextInt(4);
+                this.movimentoY = - this.movimentoY;
 
                 if (movimentoY == 0) {
                     movimentoY = 1;
                 }
+            // parede de baixo
             } else {
-                this.movimentoY = -R.nextInt(4);
+                //this.movimentoY = -R.nextInt(4);
                 this.y = pong.altura - altura;
-
+                this.movimentoY = - this.movimentoY;
                 if (movimentoY == 0) {
                     movimentoY = -1;
                 }
             }
         }
-
+        // colisão com raquete da esquerda
         if (verificaColisao(raquete1) == 1) {
             this.movimentoX = 1 + (quantidade_colisoes / 5);
-            this.movimentoY = -2 + R.nextInt(4);
-
-            if (movimentoY == 0) {
-                movimentoY = 1;
-            }
+            //this.movimentoY = -2 + R.nextInt(4);
             
-            //verificaGrau(raquete1);
+            verificaGrau(raquete1);
 
             quantidade_colisoes++;
+        // colisão com raquete da direita
         } else if (verificaColisao(raquete2) == 1) {
             this.movimentoX = -1 - (quantidade_colisoes / 5);
-            this.movimentoY = -2 + R.nextInt(4);
+            //this.movimentoY = -2 + R.nextInt(4);
             
-
-            if (movimentoY == 0) {
-                movimentoY = 1;
-            }
-            
-            //verificaGrau(raquete2);
+            verificaGrau(raquete2);
 
             quantidade_colisoes++;
         }
@@ -131,13 +128,34 @@ public class Bola {
     public void verificaGrau(Raquete raquete){
         // quanto mais longe do centro da raquete, maior a velocidade Y
         int velocidade = this.y - raquete.getY() - raquete.getAltura() / 2;
-        
-        this.movimentoY += Configuracao.RAQUETE_INCLINACAO * velocidade;
+        velocidade = converterRange(-75,75,-Configuracao.RAQUETE_INCLINACAO,Configuracao.RAQUETE_INCLINACAO,velocidade);
+        if (velocidade == 0) {
+                velocidade = R.nextInt(2);
+                if (velocidade == 0) velocidade = -1;
+            }
+        if (movimentoY < 0 ){
+            if (velocidade < 0) movimentoY = velocidade;
+            else movimentoY = -velocidade;
+        }
+        else{
+            if (velocidade > 0) movimentoY = velocidade;
+            else movimentoY = -velocidade;
+        }
     }
 
     public void renderizarBola(Graphics g) {
         g.setColor(Color.WHITE);
         g.fillOval(x, y, largura, altura);
     }
+    
+    
+
+    public static int converterRange( int inicio_original, int final_original,
+            int inicio_novo, int final_novo,int valor) {
+        double escala = (double)(final_novo - inicio_novo) / (final_original - inicio_original);
+        return (int)(inicio_novo + ((valor - inicio_original) * escala));
+    }
+
+
 
 }

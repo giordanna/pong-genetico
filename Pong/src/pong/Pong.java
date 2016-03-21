@@ -3,23 +3,28 @@ package pong;
 // copia do pong.java onde está sendo executado testes
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.Random;
+import java.io.IOException;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 import pong.Jogador.*;
 import pong.Jogador.IJogador;
 import static pong.Pong.Status.*;
 import pong.Outros.Configuracao;
+import pong.Outros.MersenneTwisterFast;
 import pong.Outros.Renderizador;
 
 public class Pong implements ActionListener, KeyListener {
+    
+    Configuracao conf = new Configuracao();
 
     public JFrame jframe;
     public Renderizador renderizador;
@@ -29,7 +34,7 @@ public class Pong implements ActionListener, KeyListener {
     // dimensões da tela
     public int largura = Configuracao.LARGURA_TELA, altura = Configuracao.ALTURA_TELA;
     
-    public final static Random R = new Random();
+    public final static  MersenneTwisterFast R = new  MersenneTwisterFast();
 
     public Raquete raquete_esquerda, raquete_direita; // independentes
     
@@ -51,7 +56,7 @@ public class Pong implements ActionListener, KeyListener {
     // humano = 0, ai basico = 1, ai perfeito = 2, ai genético = 3, treinador = 4
     public int opcao_jogador_esquerda = 0, opcao_jogador_direita = 0;
 
-    public Pong() {
+    public Pong() throws IOException {
         instancias_esquerda = new IJogador[5];
         instancias_esquerda[0] = new Humano(KeyEvent.VK_W, KeyEvent.VK_S);
         instancias_esquerda[1] = new AIBasico();
@@ -77,6 +82,9 @@ public class Pong implements ActionListener, KeyListener {
         jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jframe.add(renderizador);
         jframe.addKeyListener(this);
+        
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        jframe.setLocation(dim.width/2-jframe.getSize().width/2, dim.height/2-jframe.getSize().height/2);
 
         timer.start();
     }
@@ -245,7 +253,7 @@ public class Pong implements ActionListener, KeyListener {
         renderizador.repaint();
     }
  
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         pong = new Pong();
     }
 
@@ -323,14 +331,21 @@ public class Pong implements ActionListener, KeyListener {
     public void keyReleased(KeyEvent e) {
         int id = e.getKeyCode();
 
-        if (id == KeyEvent.VK_W) {
-            w = false;
-        } else if (id == KeyEvent.VK_S) {
-            s = false;
-        } else if (id == KeyEvent.VK_UP) {
-            cima = false;
-        } else if (id == KeyEvent.VK_DOWN) {
-            baixo = false;
+        switch (id) {
+            case KeyEvent.VK_W:
+                w = false;
+                break;
+            case KeyEvent.VK_S:
+                s = false;
+                break;
+            case KeyEvent.VK_UP:
+                cima = false;
+                break;
+            case KeyEvent.VK_DOWN:
+                baixo = false;
+                break;
+            default:
+                break;
         }
     }
 

@@ -3,14 +3,21 @@ package pong.Jogador;
 // AQUI onde treina 30 genótipos
 // to do: fazer receber jogadores, e não genótipos
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import pong.Bola;
 import pong.Outros.Configuracao;
 import pong.Raquete;
 
 public class Treinador implements IJogador {
     private static int MAIOR_FITNESS = 9999;
-    
+    private static int qtd_treinador = 0;
+    private int treinador;
     private Genotipo populacao[];
     private double intervalo;
     private boolean bola_passou;
@@ -18,12 +25,25 @@ public class Treinador implements IJogador {
     private int atual;
     private int ultima_distancia;
     private int posicao_inicial = Integer.MAX_VALUE;
+    private Writer output_fitness, output_genotipo;
     
-    public Treinador(){
+    public Treinador() throws IOException{
+        qtd_treinador++;
+        treinador = qtd_treinador;
+        
         intervalo = Configuracao.INTERVALO_GENES;
         bola_passou = false;
         contraatacou = 0;
         atual = 0;
+        
+        output_fitness = new BufferedWriter(new FileWriter("fitness" + treinador + ".csv"));
+        output_fitness.write("");
+        output_fitness.close();
+        
+        output_genotipo = new BufferedWriter(new FileWriter("melhorgenotipo" + treinador + ".csv"));
+        output_genotipo.write("");
+        output_genotipo.close();
+        
         inicializaPopulacao();
     }
     
@@ -90,7 +110,12 @@ public class Treinador implements IJogador {
         atual++;
         
         if (atual >= Configuracao.MAX_POPULACAO){
-            salvaPopulacao();
+            Arrays.sort(populacao);
+            try {
+                salvaPopulacao();
+            } catch (IOException ex) {
+                Logger.getLogger(Treinador.class.getName()).log(Level.SEVERE, null, ex);
+            }
             repopularPopulacao();
             atual = 0;
         }
@@ -108,36 +133,52 @@ public class Treinador implements IJogador {
         return melhor;
     }
     
-    public void salvaPopulacao(){
-        // to do salvar num(s) arquivo(s)
+    public void salvaPopulacao() throws IOException{
+        // salva num(s) arquivo(s)
+        output_fitness = new BufferedWriter(new FileWriter("fitness" + treinador + ".csv", true));
+        
+        for (Genotipo x: populacao){
+            output_fitness.append( (x.getFitness() + "; ").replace(".",",") );   
+        }
+        output_fitness.append("\n");
+        output_fitness.close();
+        
+        output_genotipo = new BufferedWriter(new FileWriter("melhorgenotipo" + treinador + ".csv", true));
+        output_genotipo.append((Arrays.toString(melhorGenotipo().getGenes())).replace(".",","));
+        output_genotipo.append("\n");
+        output_genotipo.close();
+        
     }
     
-    // to do rever
     public void repopularPopulacao(){
-        // ordena a população para os melhores
-        Arrays.sort(populacao);
         
-        // substuituir uma porcentagem da população (padrão = 50%);
-        int substituir = (int) (Configuracao.MAX_POPULACAO * Configuracao.PORCENTAGEM_SUBSTITUIR);
-        
-        // caso coloquem valores muito baixos na porcentagem
-        if (substituir == 0) substituir = 1;
+        //torna os piores 3/4 nulos
+        for (int i = populacao.length/4 ; i < populacao.length ; i++){
+            populacao[i] = null;
+        }
         
         int j = 0;
         int outro;
-        
-        // insere nos 50% da população os filhos gerados pelos melhores + individuo aleatório
-        // to do: refazer
-        for (int i = Configuracao.MAX_POPULACAO - substituir ; i < Configuracao.MAX_POPULACAO ; i++){
-            // para que não escolha o mesmo indivíduo
+        // preenche metade com os melhores + um genótipo aleatório da mesma geração
+        for (int i = populacao.length/4 ; i < 3*populacao.length/4 ; i++){
             while (true){
-                outro = Configuracao.R.nextInt(Configuracao.MAX_POPULACAO);
+                outro = Configuracao.R.nextInt(populacao.length/4);
                 if (j != outro) break;
             }
             populacao[i] = new Genotipo(Genotipo.crossover(populacao[j], populacao[outro]));
             // realiza a mutação
-            populacao[i].mutacao();
             j++;
+        }
+        
+        // adiciona alguns poucos genótipos com mutação
+        for (int i = 3*populacao.length/4 ; i < 7*populacao.length/8 ; i++){
+            outro = Configuracao.R.nextInt(populacao.length/2-1);
+            populacao[i] = new Genotipo(Genotipo.mutacao(populacao[outro]));
+        }
+        
+        // preenche o resto com novos genótipos aleatórios
+        for (int i = 7*populacao.length/8 ; i < populacao.length ; i++){
+            populacao[i] = Genotipo.genotipoAleatorio(-intervalo, intervalo);
         }
     }
 }
