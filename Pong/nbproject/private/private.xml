@@ -3,12 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/H:/Backup%20pendrive/Pong%20Genético/Pong/src/pong/Bola.java</file>
-            <file>file:/H:/Backup%20pendrive/Pong%20Genético/Pong/src/pong/Outros/MersenneTwisterFast.java</file>
-            <file>file:/H:/Backup%20pendrive/Pong%20Genético/Pong/src/pong/Outros/Configuracao.java</file>
-            <file>file:/H:/Backup%20pendrive/Pong%20Genético/Pong/src/pong/Pong.java</file>
-            <file>file:/H:/Backup%20pendrive/Pong%20Genético/Pong/src/pong/Jogador/Treinador.java</file>
-            <file>file:/H:/Backup%20pendrive/Pong%20Genético/Pong/src/pong/Raquete.java</file>
+            <file>file:/I:/Backup%20pendrive/Pong%20Genético/Pong/src/pong/Pong.java</file>
+            <file>file:/I:/Backup%20pendrive/Pong%20Genético/Pong/src/pong/Jogador/Treinador.java</file>
+            <file>file:/I:/Backup%20pendrive/Pong%20Genético/Pong/src/pong/Outros/Configuracao.java</file>
+            <file>file:/I:/Backup%20pendrive/Pong%20Genético/Pong/src/pong/Jogador/AIGenetico.java</file>
+            <file>file:/I:/Backup%20pendrive/Pong%20Genético/Pong/src/pong/Jogador/Genotipo.java</file>
         </group>
     </open-files>
 </project-private>

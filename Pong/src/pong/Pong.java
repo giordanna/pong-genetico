@@ -318,13 +318,12 @@ public class Pong implements ActionListener, KeyListener {
                 atualizaInstancias();
                 status_jogo = Jogando;
                 inicializarPong();
-            }
-            
             } else if (status_jogo == Pausado) {
                 status_jogo = Jogando;
             } else if (status_jogo == Jogando) {
                 status_jogo = Pausado;
             }
+        }
     }
 
     @Override
