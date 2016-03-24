@@ -25,7 +25,9 @@ public class Treinador implements IJogador {
     private int atual;
     private int ultima_distancia;
     private int posicao_inicial = Integer.MAX_VALUE;
-    private Writer output_fitness, output_genotipo;
+    private int pontos_jogador = 0, pontos_adversario = 0, total = 0;
+    private int geracao = 1;
+    private Writer output_fitness, output_genotipo, output_placar;
     
     public Treinador() throws IOException{
         qtd_treinador++;
@@ -43,6 +45,10 @@ public class Treinador implements IJogador {
         output_genotipo = new BufferedWriter(new FileWriter("melhorgenotipo" + treinador + ".csv"));
         output_genotipo.write("");
         output_genotipo.close();
+        
+        output_placar = new BufferedWriter(new FileWriter("placar" + treinador + ".csv"));
+        output_placar.write("");
+        output_placar.close();
         
         inicializaPopulacao();
     }
@@ -91,14 +97,21 @@ public class Treinador implements IJogador {
     public void resultado(int ponto){
         int fitness = 0;
         
-        if (ponto > 0)
+        total++;
+        if (ponto > 0){
             fitness = MAIOR_FITNESS; // se marcou um ponto então ele é bom mesmo
+            pontos_jogador++;
+        }
+        else if (ponto < 0){
+            pontos_adversario++;
+        }
         
         fitness += contraatacou;
         fitness += 480 - 3 * ultima_distancia;
         bola_passou = false;
         
         if (populacao[atual].getFitness() != 0){
+            // faz uma média com o fitness antigo
             populacao[atual].setFitness(populacao[atual].getFitness() + fitness);
             populacao[atual].setFitness(populacao[atual].getFitness() / 2);
         }
@@ -107,18 +120,36 @@ public class Treinador implements IJogador {
         }
         
         contraatacou = 0;
-        atual++;
         
-        if (atual >= Configuracao.MAX_POPULACAO){
-            Arrays.sort(populacao);
+        if (total == 3){
+            
             try {
                 salvaPopulacao();
             } catch (IOException ex) {
                 Logger.getLogger(Treinador.class.getName()).log(Level.SEVERE, null, ex);
             }
-            repopularPopulacao();
-            atual = 0;
+            
+            pontos_jogador = 0;
+            pontos_adversario = 0;
+            total = 0;
         }
+    }
+    
+    public String placar(){
+        return pontos_jogador + " - " + pontos_adversario;
+    }
+    
+    // muito feio mas fazer o que
+    public int getTotalPlacar(){
+        return total;
+    }
+    
+    public int getAtual(){
+        return atual + 1;
+    }
+    
+    public int getGeracao(){
+        return geracao;
     }
     
     public Genotipo melhorGenotipo(){
@@ -136,21 +167,39 @@ public class Treinador implements IJogador {
     public void salvaPopulacao() throws IOException{
         // salva num(s) arquivo(s)
         output_fitness = new BufferedWriter(new FileWriter("fitness" + treinador + ".csv", true));
+        output_fitness.append( (populacao[atual].getFitness() + "; ").replace(".",",") );   
         
-        for (Genotipo x: populacao){
-            output_fitness.append( (x.getFitness() + "; ").replace(".",",") );   
+        output_placar = new BufferedWriter(new FileWriter("placar" + treinador + ".csv", true));
+        output_placar.append(" " + placar() + "; ");
+        atual++;
+        
+        if (atual >= Configuracao.MAX_POPULACAO){
+            output_genotipo = new BufferedWriter(new FileWriter("melhorgenotipo" + treinador + ".csv", true));
+            
+            // mais bonito que a forma anterior
+            for (double x: melhorGenotipo().getGenes()){
+                output_genotipo.append(String.valueOf(x).replace(".",","));
+                output_genotipo.append("; ");
+            }
+            output_genotipo.append("\n");
+            output_genotipo.close();
+            
+            output_fitness.append("\n");
+            output_placar.append("\n");
+            
+            repopularPopulacao();
+            atual = 0;
+            geracao++;
         }
-        output_fitness.append("\n");
         output_fitness.close();
-        
-        output_genotipo = new BufferedWriter(new FileWriter("melhorgenotipo" + treinador + ".csv", true));
-        output_genotipo.append((Arrays.toString(melhorGenotipo().getGenes())).replace(".",","));
-        output_genotipo.append("\n");
-        output_genotipo.close();
+        output_placar.close();
         
     }
     
     public void repopularPopulacao(){
+        
+        // ordena população
+        Arrays.sort(populacao);
         
         //torna os piores 3/4 nulos
         for (int i = populacao.length/4 ; i < populacao.length ; i++){

@@ -8,7 +8,7 @@ import pong.Raquete;
 public class Genotipo implements Comparable<Genotipo>{
     
     private double gene[];
-    private double fitness;
+    private double fitness = 0;
     
     public Genotipo(){
         gene = new double[Configuracao.TAMANHO_CROMOSSOMO];

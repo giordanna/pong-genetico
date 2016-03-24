@@ -2,7 +2,6 @@ package pong;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.util.Random;
 import pong.Outros.Configuracao;
 import pong.Outros.MersenneTwisterFast;
 
