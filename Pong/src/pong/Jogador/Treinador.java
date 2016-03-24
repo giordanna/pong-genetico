@@ -4,6 +4,7 @@ package pong.Jogador;
 // to do: fazer receber jogadores, e não genótipos
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
@@ -38,15 +39,22 @@ public class Treinador implements IJogador {
         contraatacou = 0;
         atual = 0;
         
-        output_fitness = new BufferedWriter(new FileWriter("fitness" + treinador + ".csv"));
+        
+        File diretorio = new File("arquivos");
+        if (!diretorio.exists()) {
+            System.out.println("criando repositório pros arquivos");
+            diretorio.mkdir();
+        }
+
+        output_fitness = new BufferedWriter(new FileWriter("./arquivos/fitness" + treinador + ".csv"));
         output_fitness.write("");
         output_fitness.close();
         
-        output_genotipo = new BufferedWriter(new FileWriter("melhorgenotipo" + treinador + ".csv"));
+        output_genotipo = new BufferedWriter(new FileWriter("./arquivos/melhorgenotipo" + treinador + ".csv"));
         output_genotipo.write("");
         output_genotipo.close();
         
-        output_placar = new BufferedWriter(new FileWriter("placar" + treinador + ".csv"));
+        output_placar = new BufferedWriter(new FileWriter("./arquivos/placar" + treinador + ".csv"));
         output_placar.write("");
         output_placar.close();
         
@@ -166,15 +174,15 @@ public class Treinador implements IJogador {
     
     public void salvaPopulacao() throws IOException{
         // salva num(s) arquivo(s)
-        output_fitness = new BufferedWriter(new FileWriter("fitness" + treinador + ".csv", true));
+        output_fitness = new BufferedWriter(new FileWriter("./arquivos/fitness" + treinador + ".csv", true));
         output_fitness.append( (populacao[atual].getFitness() + "; ").replace(".",",") );   
         
-        output_placar = new BufferedWriter(new FileWriter("placar" + treinador + ".csv", true));
+        output_placar = new BufferedWriter(new FileWriter("./arquivos/placar" + treinador + ".csv", true));
         output_placar.append(" " + placar() + "; ");
         atual++;
         
         if (atual >= Configuracao.MAX_POPULACAO){
-            output_genotipo = new BufferedWriter(new FileWriter("melhorgenotipo" + treinador + ".csv", true));
+            output_genotipo = new BufferedWriter(new FileWriter("./arquivos/melhorgenotipo" + treinador + ".csv", true));
             
             // mais bonito que a forma anterior
             for (double x: melhorGenotipo().getGenes()){

@@ -37,7 +37,7 @@ public class Configuracao {
     
     public Configuracao() throws FileNotFoundException{
         
-        File f = new File("input.txt");
+        File f = new File("./arquivos/input.txt");
         if(f.exists() && !f.isDirectory()) { 
             try (Scanner s = new Scanner(f)) {
                 while (s.hasNextLine()){
