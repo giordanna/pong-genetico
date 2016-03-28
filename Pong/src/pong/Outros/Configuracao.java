@@ -1,17 +1,21 @@
 package pong.Outros;
 
+import java.awt.Font;
+import java.awt.FontFormatException;
+import java.awt.GraphicsEnvironment;
 import java.util.List;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Configuracao {
     
     // todo fazer input
     public static MersenneTwisterFast R = new MersenneTwisterFast();
-    
-    public static String FONTE = "Courier New";
     
     public static int LARGURA_TELA = 800;
     public static int ALTURA_TELA = 600;
@@ -35,7 +39,18 @@ public class Configuracao {
     
     public static List<Double> config = new ArrayList<>();
     
-    public Configuracao() throws FileNotFoundException{
+    public static Font FONTE_TIPO;
+    
+    public Configuracao() throws FileNotFoundException, IOException{
+        
+        
+        try {
+            FONTE_TIPO = Font.createFont(Font.TRUETYPE_FONT, this.getClass().getClassLoader().getResourceAsStream("prstartk.ttf"));
+        } catch (FontFormatException ex) {
+            Logger.getLogger(Configuracao.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        GraphicsEnvironment genv = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        genv.registerFont(FONTE_TIPO);
         
         File f = new File("./arquivos/input.txt");
         if(f.exists() && !f.isDirectory()) { 

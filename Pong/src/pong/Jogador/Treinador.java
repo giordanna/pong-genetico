@@ -223,7 +223,6 @@ public class Treinador implements IJogador {
                 if (j != outro) break;
             }
             populacao[i] = new Genotipo(Genotipo.crossover(populacao[j], populacao[outro]));
-            // realiza a mutação
             j++;
         }
         

@@ -40,7 +40,8 @@ public class Genotipo implements Comparable<Genotipo>{
     // valida velocidade y da raquete
     // retorna velocidade da raquete
     public int validaVelocidade(Raquete jogador, Raquete oponente, Bola bola){
-        return (int) (gene[0] * bola.getMovimentoY() + gene[1] * bola.getY() + gene[2] * jogador.getY());
+        return (int) (gene[0] * bola.getMovimentoY() + gene[1] * bola.getY() + 
+                gene[2] * jogador.getY());
     }
     
     // retorna um genótipo aleatório
@@ -54,7 +55,6 @@ public class Genotipo implements Comparable<Genotipo>{
     }
     
     // retorna filho produzido por dois pais através de crossover por média aritmética
-    // todo mudar pra cruzamento aritmético mesmo
     public static Genotipo crossover(Genotipo a, Genotipo b){
         Genotipo novo = new Genotipo();
         for (int i = 0 ; i < Configuracao.TAMANHO_CROMOSSOMO ; i++){

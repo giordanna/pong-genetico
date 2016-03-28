@@ -121,36 +121,30 @@ public class Pong implements ActionListener, KeyListener {
     
     public void modoMenu(Graphics2D g){
         
-        String[] string = {"Humano", "AI Básico", "AI Perfeito", "AI Genético", "AI Treinador"};
+        String[] string = {"Humano", "AI Basico", "AI Perfeito", "AI Genetico", "AI Treinador"};
         if (status_jogo == Menu) {
             g.setColor(Color.WHITE);
-            g.setFont(new Font(Configuracao.FONTE, Font.BOLD, 50));
-            escreveTexto(g, "PONG GENÉTICO", 0, 50);
+            g.setFont(Configuracao.FONTE_TIPO.deriveFont(Font.BOLD,50));
+            escreveTexto(g, "PONG GENETICO", 0, 60);
 
             if (seleciona_jogador_esquerda) {
                 
-                g.setFont(new Font(Configuracao.FONTE, Font.BOLD, 30));
-                escreveTexto(g, "← Jogador 1: " + string[opcao_jogador_esquerda] + " →" , 0, altura / 2 - 25);
-                                
-                g.setFont(new Font(Configuracao.FONTE, Font.PLAIN, 30));
+                g.setFont(Configuracao.FONTE_TIPO.deriveFont(Font.BOLD,20));
+                escreveTexto(g, "<< Jogador 1: " + string[opcao_jogador_esquerda] + " >>" , 0, altura / 2 - 25);
+                 
+                g.setFont(Configuracao.FONTE_TIPO.deriveFont(Font.PLAIN,20));
                 escreveTexto(g, "Jogador 2: " + string[opcao_jogador_direita] , 0, altura / 2 + 25);
-                escreveTexto(g, "Pressione Espaço para jogar" , 0, altura / 2 + 75);
-
-                g.setFont(new Font(Configuracao.FONTE, Font.BOLD, 50));
-                g.drawString("↑↓" , 10, altura / 2);
+                escreveTexto(g, "Pressione Space para jogar" , 0, altura / 2 + 100);
             }
             
             if (!seleciona_jogador_esquerda) {
 
-                g.setFont(new Font(Configuracao.FONTE, Font.PLAIN, 30));
+                g.setFont(Configuracao.FONTE_TIPO.deriveFont(Font.PLAIN,20));
                 escreveTexto(g, "Jogador 1: " + string[opcao_jogador_esquerda], 0, altura / 2 - 25);
-                escreveTexto(g, "Pressione Espaço para jogar" , 0, altura / 2 + 75);
+                escreveTexto(g, "Pressione Space para jogar" , 0, altura / 2 + 100);
 
-                g.setFont(new Font(Configuracao.FONTE, Font.BOLD, 30));
-                escreveTexto(g, "← Jogador 2: " + string[opcao_jogador_direita] + " →" , 0, altura / 2 + 25);
-
-                g.setFont(new Font(Configuracao.FONTE, Font.BOLD, 50));
-                g.drawString("↑↓" , 10, altura / 2);
+                g.setFont(Configuracao.FONTE_TIPO.deriveFont(Font.BOLD,20));
+                escreveTexto(g, "<< Jogador 2: " + string[opcao_jogador_direita] + " >>" , 0, altura / 2 + 25);
             }
         }
     }
@@ -158,7 +152,7 @@ public class Pong implements ActionListener, KeyListener {
     public void modoPausado(Graphics2D g){
         if (status_jogo == Pausado) {
             g.setColor(Color.WHITE);
-            g.setFont(new Font(Configuracao.FONTE, 1, 50));
+            g.setFont(Configuracao.FONTE_TIPO.deriveFont(1,50));
             escreveTexto(g, "PAUSA", 0, altura / 2);
         }
     }
@@ -178,32 +172,34 @@ public class Pong implements ActionListener, KeyListener {
             // faz o círculo do meio
             g.drawOval(largura / 2 - 150, altura / 2 - 150, 300, 300);
 
-            g.setFont(new Font(Configuracao.FONTE, 1, 50));
+            g.setFont(Configuracao.FONTE_TIPO.deriveFont(1,40));
             
             // faz a pontuação
-            g.drawString(String.valueOf(raquete_esquerda.getScore()), largura / 2 - 90, 50);
-            g.drawString(String.valueOf(raquete_direita.getScore()), largura / 2 + 65, 50);
+            escreveTexto(g, String.valueOf(raquete_esquerda.getScore()), -65, 50);
+            escreveTexto(g, String.valueOf(raquete_direita.getScore()), 65, 50);
+            //g.drawString(String.valueOf(raquete_esquerda.getScore()), largura / 2 - 90, 50);
+            //g.drawString(String.valueOf(raquete_direita.getScore()), largura / 2 + 65, 50);
             
             // informa qual o indivíduo atual e a geração caso o jogador da esquerda seja treinador
             if (opcao_jogador_esquerda == 4){
-                g.setFont(new Font(Configuracao.FONTE, 1, 30));
-                g.drawString("Atual: " + ((Treinador) jogador_esquerda).getAtual(), 50, 30);
+                g.setFont(Configuracao.FONTE_TIPO.deriveFont(1,20));
+                g.drawString("Atual:" + ((Treinador) jogador_esquerda).getAtual(), 50, 30);
                 
-                g.setFont(new Font(Configuracao.FONTE, 1, 25));
-                g.drawString("Geração: " + ((Treinador) jogador_esquerda).getGeracao(), 50, altura - 20);
+                g.setFont(Configuracao.FONTE_TIPO.deriveFont(1,15));
+                g.drawString("Geracao:" + ((Treinador) jogador_esquerda).getGeracao(), 50, altura - 15);
             }
             
             // informa qual o indivíduo atual e a geração caso o jogador da direita seja treinador
             if (opcao_jogador_direita == 4){
-                g.setFont(new Font(Configuracao.FONTE, 1, 30));
-                g.drawString("Atual: " + ((Treinador) jogador_direita).getAtual(), 3*largura/ 4, 30);
+                g.setFont(Configuracao.FONTE_TIPO.deriveFont(1,20));
+                g.drawString("Atual:" + ((Treinador) jogador_direita).getAtual(), 3*largura/ 4, 30);
                 
-                g.setFont(new Font(Configuracao.FONTE, 1, 25));
-                g.drawString("Geração: " + ((Treinador) jogador_direita).getGeracao(), 3*largura/ 4, altura - 20);
+                g.setFont(Configuracao.FONTE_TIPO.deriveFont(1,15));
+                g.drawString("Geracao:" + ((Treinador) jogador_direita).getGeracao(), 3*largura/ 4, altura - 15);
             }
-            
-            g.setFont(new Font(Configuracao.FONTE, 1, 20));
-            escreveTexto(g, "Velocidade: " + getVelocidade(), 0, altura - 30);
+
+            g.setFont(Configuracao.FONTE_TIPO.deriveFont(1,15));
+            escreveTexto(g, "Velocidade:" + getVelocidade(), 0, altura - 40);
             
             // aqui que acontece a mágica das raquetes e da bola
             raquete_esquerda.renderizarRaquete(g);
@@ -340,10 +336,10 @@ public class Pong implements ActionListener, KeyListener {
     public String getVelocidade(){
         switch (velocidade){
             case 1:{
-                return "Super Rápido";
+                return "Super Rapido";
             }
             case 2:{
-                return "Rápido";
+                return "Rapido";
             }
             case 3:{
                 return "Normal";

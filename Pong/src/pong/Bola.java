@@ -85,11 +85,11 @@ public class Bola {
         if (verificaColisao(raquete1) == 2) {
             raquete2.atualizaScore();
             criar();
-            return 1; // jogador 1 marcou ponto
+            return -1; // jogador 2 marcou ponto
         } else if (verificaColisao(raquete2) == 2) {
             raquete1.atualizaScore();
             criar();
-            return -1; // jogador 2 marcou ponto
+            return 1; // jogador 1 marcou ponto
         }
         
         return 0;
@@ -115,12 +115,12 @@ public class Bola {
 
     public int verificaColisao(Raquete raquete) {
         if (this.x < raquete.getX() + raquete.getLargura() && this.x + largura > raquete.getX() && this.y < raquete.getY() + raquete.getAltura() && this.y + altura > raquete.getY()) {
-            return 1; //bounce
+            return 1; //rebate
         } else if ((raquete.getX() > x && raquete.getNumeroRaquete() == 1) || (raquete.getX() < x - largura && raquete.getNumeroRaquete() == 2)) {
-            return 2; //score
+            return 2; //ponto
         }
 
-        return 0; //nothing
+        return 0; //nada
     }
     
     // ao acertar a raquete, verificar a velocidade do movimento Y da bola

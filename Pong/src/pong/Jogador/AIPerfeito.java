@@ -11,15 +11,16 @@ public class AIPerfeito implements IJogador {
 
     @Override
     public int verificaDirecao(Raquete minha, Raquete oponente, Bola bola) {
+        
         int bola_y = bola.getY();
-        int bola_velocidade = Math.abs(bola.getMovimentoX());
+        int bola_vel_x = Math.abs(bola.getMovimentoX());
         
         if (minha.getX() < Configuracao.LARGURA_TELA / 2)
-            bola_velocidade *= -1;
+            bola_vel_x *= -1;
         
         // a física em si
         if (bola.getMovimentoX() != 0)
-            bola_y = (bola.getMovimentoY() / bola_velocidade) * (minha.getX() - bola.getX() + bola.getY());
+            bola_y = (bola.getMovimentoY() / bola_vel_x) * (minha.getX() - bola.getX()) + bola.getY();
         
         // acha o verdadeiro y da bola pelo fato que acerta as paredes
         while (bola_y < 0 || bola_y > Configuracao.ALTURA_TELA){
