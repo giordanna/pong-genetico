@@ -21,12 +21,11 @@ import pong.Jogador.*;
 import pong.Jogador.IJogador;
 import static pong.Pong.Status.*;
 import pong.Outros.Configuracao;
-import pong.Outros.MersenneTwisterFast;
 import pong.Outros.Renderizador;
 
 public class Pong implements ActionListener, KeyListener {
     
-    Configuracao conf = new Configuracao();
+    public Configuracao conf = new Configuracao();
     
     public static Timer timer;
 
@@ -37,8 +36,6 @@ public class Pong implements ActionListener, KeyListener {
     
     // dimensões da tela
     public int largura = Configuracao.LARGURA_TELA, altura = Configuracao.ALTURA_TELA;
-    
-    public final static  MersenneTwisterFast R = new  MersenneTwisterFast();
 
     public Raquete raquete_esquerda, raquete_direita; // independentes
     

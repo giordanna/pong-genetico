@@ -67,7 +67,7 @@ public class Raquete {
         }
     }
     
-    int determinaLimite(int valor, int min, int max) {
+    public int determinaLimite(int valor, int min, int max) {
         return Math.min(Math.max(valor, min), max);
     }
     

@@ -34,7 +34,7 @@ public class Configuracao {
     
     public static double INTERVALO_GENES = 1.5;
 
-    public static int VELOCIDADE_GERAL = 5; // to do ver como usar isso para acelerar o jogo inteiro
+    //public static int VELOCIDADE_GERAL = 5; // to do ver como usar isso para acelerar o jogo inteiro
     public static int RODADA = 3;
     
     public static List<Double> config = new ArrayList<>();
@@ -71,7 +71,7 @@ public class Configuracao {
             TAMANHO_CROMOSSOMO = config.get(8).intValue();
             MAX_POPULACAO = config.get(9).intValue();
             INTERVALO_GENES = config.get(10);
-            VELOCIDADE_GERAL = config.get(11).intValue();
+            //VELOCIDADE_GERAL = config.get(11).intValue();
             RODADA = config.get(12).intValue();
             
             

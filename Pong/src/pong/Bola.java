@@ -3,7 +3,6 @@ package pong;
 import java.awt.Color;
 import java.awt.Graphics;
 import pong.Outros.Configuracao;
-import pong.Outros.MersenneTwisterFast;
 
 public class Bola {
 
@@ -12,8 +11,6 @@ public class Bola {
     private int movimentoX, movimentoY;
 
     private Pong pong;
-    
-    public final static MersenneTwisterFast R = new MersenneTwisterFast();
 
     private int quantidade_colisoes;
 
@@ -100,13 +97,13 @@ public class Bola {
         this.x = pong.largura / 2 - this.largura / 2;
         this.y = pong.altura / 2 - this.altura / 2;
 
-        this.movimentoY = -2 + R.nextInt(4);
+        this.movimentoY = -2 + Configuracao.R.nextInt(4);
 
         if (movimentoY == 0) {
             movimentoY = 1;
         }
 
-        if (R.nextBoolean()) {
+        if (Configuracao.R.nextBoolean()) {
             movimentoX = 1;
         } else {
             movimentoX = -1;
@@ -129,7 +126,7 @@ public class Bola {
         int velocidade = this.y - raquete.getY() - raquete.getAltura() / 2;
         velocidade = converterRange(-75,75,-Configuracao.RAQUETE_INCLINACAO,Configuracao.RAQUETE_INCLINACAO,velocidade);
         if (velocidade == 0) {
-                velocidade = R.nextInt(2);
+                velocidade = Configuracao.R.nextInt(2);
                 if (velocidade == 0) velocidade = -1;
             }
         if (movimentoY < 0 ){
