@@ -114,7 +114,7 @@ public class Pong implements ActionListener, KeyListener {
             g.getFontMetrics().getStringBounds(texto, g).getWidth();
         int inicio = largura/2 - comprimento/2;
         g.drawString(texto, inicio + x, y);
- }
+    }
     
     public void modoMenu(Graphics2D g){
         
