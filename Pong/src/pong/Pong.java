@@ -12,7 +12,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.File;
 import java.io.IOException;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
@@ -62,19 +64,22 @@ public class Pong implements ActionListener, KeyListener {
     public static int velocidade = 3;
 
     public Pong() throws IOException {
-        instancias_esquerda = new IJogador[5];
+        instancias_esquerda = new IJogador[6];
         instancias_esquerda[0] = new Humano(KeyEvent.VK_W, KeyEvent.VK_S);
         instancias_esquerda[1] = new AIBasico();
         instancias_esquerda[2] = new AIPerfeito();
         instancias_esquerda[3] = new AIGenetico(Genotipo.genotipoAleatorio(0, 0));
         instancias_esquerda[4] = null;
+        instancias_esquerda[5] = null;
         
-        instancias_direita = new IJogador[5];
+        
+        instancias_direita = new IJogador[6];
         instancias_direita[0] = new Humano(KeyEvent.VK_UP, KeyEvent.VK_DOWN);
         instancias_direita[1] = new AIBasico();
         instancias_direita[2] = new AIPerfeito();
         instancias_direita[3] = new AIGenetico(Genotipo.genotipoAleatorio(0, 0));
         instancias_direita[4] = null;
+        instancias_direita[5] = null;
         
         // tempo de atualização dos frames. mexer nisso aqui
         timer = new Timer(20, this);
@@ -118,7 +123,7 @@ public class Pong implements ActionListener, KeyListener {
     
     public void modoMenu(Graphics2D g){
         
-        String[] string = {"Humano", "AI Basico", "AI Perfeito", "AI Genetico", "AI Treinador"};
+        String[] string = {"Humano", "AI Basico", "AI Perfeito", "AI Genetico", "AI Treinador", "AI Gen. de Arquivo"};
         if (status_jogo == Menu) {
             g.setColor(Color.WHITE);
             g.setFont(Configuracao.FONTE_TIPO.deriveFont(Font.BOLD,50));
@@ -219,6 +224,54 @@ public class Pong implements ActionListener, KeyListener {
     
     public void atualizaInstancias() throws IOException{
         
+        boolean flag = false;
+        
+        if (opcao_jogador_direita == 5){ // carregar Genótipo do arquivo
+            if (instancias_direita[opcao_jogador_direita] == null){
+                double genotipo [] = new double [3];
+                
+                File f = new File("./arquivos/melhordireita.txt");
+                if(f.exists() && !f.isDirectory()) {
+                    int i = 0;
+                    try (Scanner scan = new Scanner(f)) {
+                        while (scan.hasNextLine()){
+                            genotipo[i] = scan.nextDouble();
+                            i++;
+                        }
+                    }
+                    instancias_direita[opcao_jogador_direita] = new AIGenetico(new Genotipo(genotipo));
+                }
+                else{
+                    // deu erro: arquivo não existe
+                    flag = true;
+                }
+                
+            }
+        }
+        
+        if (opcao_jogador_esquerda == 5){ // carregar Genótipo do arquivo
+            if (instancias_esquerda[opcao_jogador_esquerda] == null){
+                double genotipo [] = new double [3];
+                
+                File f = new File("./arquivos/melhoresquerda.txt");
+                if(f.exists() && !f.isDirectory()) {
+                    int i = 0;
+                    try (Scanner scan = new Scanner(f)) {
+                        while (scan.hasNextLine()){
+                            genotipo[i] = scan.nextDouble();
+                            i++;
+                        }
+                    }
+                    instancias_esquerda[opcao_jogador_esquerda] = new AIGenetico(new Genotipo(genotipo));
+                }
+                else{
+                    // deu erro: arquivo não existe
+                    flag = true;
+                }
+                
+            }
+        }
+        
         if (opcao_jogador_esquerda == 4) // AI Treinador
             if (instancias_esquerda[opcao_jogador_esquerda] == null){
                 instancias_esquerda[opcao_jogador_esquerda] = new Treinador();
@@ -241,6 +294,9 @@ public class Pong implements ActionListener, KeyListener {
         
         jogador_esquerda = instancias_esquerda[opcao_jogador_esquerda];
         jogador_direita = instancias_direita[opcao_jogador_direita];
+        
+        status_jogo = Jogando;
+        if (flag) status_jogo = Menu; // se ocorreu algum erro no carregamento do arquivo
     }
     
     // to do: mexer nisso aqui
@@ -367,14 +423,14 @@ public class Pong implements ActionListener, KeyListener {
         } else if (id == KeyEvent.VK_RIGHT) { // quando pressionar seta pra direita
             if (status_jogo == Menu){
                 if (seleciona_jogador_esquerda) {
-                    if (opcao_jogador_esquerda < 4) {
+                    if (opcao_jogador_esquerda < 5) {
                         opcao_jogador_esquerda++;
                     } else {
                         opcao_jogador_esquerda = 0;
                     }
                 }
                 else{
-                    if (opcao_jogador_direita < 4) {
+                    if (opcao_jogador_direita < 5) {
                         opcao_jogador_direita++;
                     } else {
                         opcao_jogador_direita = 0;
@@ -387,20 +443,22 @@ public class Pong implements ActionListener, KeyListener {
                     if (opcao_jogador_esquerda > 0) {
                         opcao_jogador_esquerda--;
                     } else {
-                        opcao_jogador_esquerda = 4;
+                        opcao_jogador_esquerda = 5;
                     }
                 }
                 else{
                     if (opcao_jogador_direita > 0) {
                         opcao_jogador_direita--;
                     } else {
-                        opcao_jogador_direita = 4;
+                        opcao_jogador_direita = 5;
                     }
                 }
             }
             // se apertou Esc no jogo ou quando tava pausado, volta pro menu
         } else if (id == KeyEvent.VK_ESCAPE && ((status_jogo == Jogando) || (status_jogo == Pausado))) {
             status_jogo = Menu;
+            velocidade = 3;
+            mudarVelocidade();
         } else if (id == KeyEvent.VK_SPACE) {
             if (status_jogo == Menu){
                 
@@ -410,11 +468,10 @@ public class Pong implements ActionListener, KeyListener {
                 } catch (IOException ex) {
                     Logger.getLogger(Pong.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                velocidade = 3;
-                mudarVelocidade();
-                status_jogo = Jogando;
-                partida = 0;
-                inicializarPong();
+                if (status_jogo == Jogando){
+                    partida = 0;
+                    inicializarPong();
+                }
             } else if (status_jogo == Pausado) {
                 status_jogo = Jogando;
             } else if (status_jogo == Jogando) {
