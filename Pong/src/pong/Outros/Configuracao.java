@@ -17,6 +17,8 @@ public class Configuracao {
     // todo fazer input
     public static MersenneTwisterFast R = new MersenneTwisterFast();
     
+    public static int MAX_GERACOES = 20;
+    
     public static int LARGURA_TELA = 800;
     public static int ALTURA_TELA = 600;
     
@@ -73,6 +75,7 @@ public class Configuracao {
             INTERVALO_GENES = config.get(10);
             //VELOCIDADE_GERAL = config.get(11).intValue();
             RODADA = config.get(12).intValue();
+            MAX_GERACOES = config.get(13).intValue();
             
             
         }

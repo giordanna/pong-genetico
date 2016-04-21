@@ -115,7 +115,7 @@ public class Treinador implements IJogador {
         }
         
         fitness += contraatacou;
-        fitness += 480 - 3 * ultima_distancia;
+        fitness += Configuracao.ALTURA_TELA - 3 * ultima_distancia;
         bola_passou = false;
         
         if (populacao[atual].getFitness() != 0){
@@ -227,14 +227,9 @@ public class Treinador implements IJogador {
         }
         
         // adiciona alguns poucos genótipos com mutação
-        for (int i = 3*populacao.length/4 ; i < 7*populacao.length/8 ; i++){
+        for (int i = 3*populacao.length/4 ; i < populacao.length ; i++){
             outro = Configuracao.R.nextInt(populacao.length/2-1);
             populacao[i] = new Genotipo(Genotipo.mutacao(populacao[outro]));
-        }
-        
-        // preenche o resto com novos genótipos aleatórios
-        for (int i = 7*populacao.length/8 ; i < populacao.length ; i++){
-            populacao[i] = Genotipo.genotipoAleatorio(-intervalo, intervalo);
         }
     }
 }

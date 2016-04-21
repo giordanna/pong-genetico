@@ -347,6 +347,19 @@ public class Pong implements ActionListener, KeyListener {
                 }
             }
         }
+        
+        if (jogador_esquerda instanceof Treinador)
+            if (((Treinador) jogador_esquerda).getGeracao() > Configuracao.MAX_GERACOES){
+                status_jogo = Menu;
+                velocidade = 3;
+                mudarVelocidade();
+            }
+        if (jogador_direita instanceof Treinador)
+            if (((Treinador) jogador_direita).getGeracao() > Configuracao.MAX_GERACOES){
+                status_jogo = Menu;
+                velocidade = 3;
+                mudarVelocidade();
+            }
     }
 
     // onde realiza o update dos frames
