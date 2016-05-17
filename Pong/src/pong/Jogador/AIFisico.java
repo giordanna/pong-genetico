@@ -6,7 +6,7 @@ import pong.Bola;
 import pong.Outros.Configuracao;
 import pong.Raquete;
 
-public class AIPerfeito implements IJogador {
+public class AIFisico implements IJogador {
     
 
     @Override

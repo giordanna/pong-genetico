@@ -17,7 +17,7 @@ public class Configuracao {
     // todo fazer input
     public static MersenneTwisterFast R = new MersenneTwisterFast();
     
-    public static int MAX_GERACOES = 20;
+    
     
     public static int LARGURA_TELA = 800;
     public static int ALTURA_TELA = 600;
@@ -36,8 +36,9 @@ public class Configuracao {
     
     public static double INTERVALO_GENES = 1.5;
 
-    //public static int VELOCIDADE_GERAL = 5; // to do ver como usar isso para acelerar o jogo inteiro
     public static int RODADA = 3;
+    
+    public static int MAX_GERACOES = 50;
     
     public static List<Double> config = new ArrayList<>();
     
@@ -70,10 +71,8 @@ public class Configuracao {
             MAX_VELOCIDADE_RAQUETE = config.get(5).intValue();
             MAX_VELOCIDADE_BOLA = config.get(6).intValue();
             RAQUETE_INCLINACAO = config.get(7).intValue();
-            TAMANHO_CROMOSSOMO = config.get(8).intValue();
             MAX_POPULACAO = config.get(9).intValue();
             INTERVALO_GENES = config.get(10);
-            //VELOCIDADE_GERAL = config.get(11).intValue();
             RODADA = config.get(12).intValue();
             MAX_GERACOES = config.get(13).intValue();
             

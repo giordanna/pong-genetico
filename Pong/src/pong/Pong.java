@@ -1,6 +1,5 @@
 package pong;
 
-// copia do pong.java onde está sendo executado testes
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -43,8 +42,8 @@ public class Pong implements ActionListener, KeyListener {
     
     public IJogador jogador_esquerda, jogador_direita; // os que vão ser usados de fato
     
-    public IJogador instancias_esquerda[]; // humano, ai basico, ai perfeito, ai genético, treinador
-    public IJogador instancias_direita[]; // humano, ai basico, ai perfeito, ai genético, treinador
+    public IJogador instancias_esquerda[]; // humano, ai basico, ai fisico, ai genético, treinador
+    public IJogador instancias_direita[]; // humano, ai basico, ai fisico, ai genético, treinador
 
     public Bola bola;
 
@@ -65,18 +64,18 @@ public class Pong implements ActionListener, KeyListener {
 
     public Pong() throws IOException {
         instancias_esquerda = new IJogador[6];
-        instancias_esquerda[0] = new Humano(KeyEvent.VK_W, KeyEvent.VK_S);
+        instancias_esquerda[0] = new Humano();
         instancias_esquerda[1] = new AIBasico();
-        instancias_esquerda[2] = new AIPerfeito();
+        instancias_esquerda[2] = new AIFisico();
         instancias_esquerda[3] = new AIGenetico(Genotipo.genotipoAleatorio(0, 0));
         instancias_esquerda[4] = null;
         instancias_esquerda[5] = null;
         
         
         instancias_direita = new IJogador[6];
-        instancias_direita[0] = new Humano(KeyEvent.VK_UP, KeyEvent.VK_DOWN);
+        instancias_direita[0] = new Humano();
         instancias_direita[1] = new AIBasico();
-        instancias_direita[2] = new AIPerfeito();
+        instancias_direita[2] = new AIFisico();
         instancias_direita[3] = new AIGenetico(Genotipo.genotipoAleatorio(0, 0));
         instancias_direita[4] = null;
         instancias_direita[5] = null;
@@ -123,7 +122,7 @@ public class Pong implements ActionListener, KeyListener {
     
     public void modoMenu(Graphics2D g){
         
-        String[] string = {"Humano", "AI Basico", "AI Perfeito", "AI Genetico", "AI Treinador", "AI Gen. de Arquivo"};
+        String[] string = {"Humano", "AI Basico", "AI Fisico", "AI Genetico", "AI Treinador", "AI Gen. de Arquivo"};
         if (status_jogo == Menu) {
             g.setColor(Color.WHITE);
             g.setFont(Configuracao.FONTE_TIPO.deriveFont(Font.BOLD,50));
@@ -179,8 +178,6 @@ public class Pong implements ActionListener, KeyListener {
             // faz a pontuação
             escreveTexto(g, String.valueOf(raquete_esquerda.getScore()), -65, 50);
             escreveTexto(g, String.valueOf(raquete_direita.getScore()), 65, 50);
-            //g.drawString(String.valueOf(raquete_esquerda.getScore()), largura / 2 - 90, 50);
-            //g.drawString(String.valueOf(raquete_direita.getScore()), largura / 2 + 65, 50);
             
             // informa qual o indivíduo atual e a geração caso o jogador da esquerda seja treinador
             if (opcao_jogador_esquerda == 4){

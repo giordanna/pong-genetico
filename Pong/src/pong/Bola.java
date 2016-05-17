@@ -7,12 +7,14 @@ import pong.Outros.Configuracao;
 public class Bola {
 
     private int x, y, largura = Configuracao.BOLA_RAIO, altura = largura;
-       
+
     private int movimentoX, movimentoY;
 
     private Pong pong;
 
     private int quantidade_colisoes;
+    
+    private boolean passou = false;
 
     public Bola(Pong pong) {
         this.pong = pong;
@@ -33,7 +35,7 @@ public class Bola {
     public int getMovimentoX() { return movimentoX; }
     
     public int getMovimentoY() { return movimentoY; }
-    
+
     // aqui que eu tenho que mudar para verificar
     public int atualizarBola(Raquete raquete1, Raquete raquete2) {
         int velocidade = Configuracao.MAX_VELOCIDADE_BOLA;
@@ -46,7 +48,7 @@ public class Bola {
             // parede de cima
             if (this.movimentoY < 0) {
                 this.y = 0;
-                //this.movimentoY = R.nextInt(4);
+                
                 this.movimentoY = - this.movimentoY;
 
                 if (movimentoY == 0) {
@@ -54,7 +56,7 @@ public class Bola {
                 }
             // parede de baixo
             } else {
-                //this.movimentoY = -R.nextInt(4);
+
                 this.y = pong.altura - altura;
                 this.movimentoY = - this.movimentoY;
                 if (movimentoY == 0) {
@@ -64,16 +66,14 @@ public class Bola {
         }
         // colisão com raquete da esquerda
         if (verificaColisao(raquete1) == 1) {
-            this.movimentoX = 1 + (quantidade_colisoes / 5);
-            //this.movimentoY = -2 + R.nextInt(4);
-            
+            this.movimentoX = 1 + (quantidade_colisoes / Configuracao.MAX_VELOCIDADE_BOLA);
+
             verificaGrau(raquete1);
 
             quantidade_colisoes++;
         // colisão com raquete da direita
         } else if (verificaColisao(raquete2) == 1) {
-            this.movimentoX = -1 - (quantidade_colisoes / 5);
-            //this.movimentoY = -2 + R.nextInt(4);
+            this.movimentoX = -1 - (quantidade_colisoes / Configuracao.MAX_VELOCIDADE_BOLA);
             
             verificaGrau(raquete2);
 
@@ -108,6 +108,8 @@ public class Bola {
         } else {
             movimentoX = -1;
         }
+        
+        this.passou = false;
     }
 
     public int verificaColisao(Raquete raquete) {
@@ -116,21 +118,28 @@ public class Bola {
             if (x <= raquete.getX() + raquete.getLargura() &&
                     y + altura <= raquete.getY() + raquete.getAltura() &&
                     y >= raquete.getY()) {
-                return 1; //rebate
-            } else if ((raquete.getX() >= x + largura && raquete.getNumeroRaquete() == 1) ||
-                    (raquete.getX() + raquete.getLargura() <= x - largura && raquete.getNumeroRaquete() == 2)) {
+                if (!passou) return 1; //rebate
+                else return 0; // nada
+            } else if (raquete.getX() >= x + largura) {
                 return 2; //ponto
-            }
+            } else if (raquete.getX() + raquete.getLargura() > x) {
+                this.passou = true;
+                return 0;
+            }  
         }
         else{
             if (x + largura >= raquete.getX() &&
                     y + altura <= raquete.getY() + raquete.getAltura() &&
                     y >= raquete.getY()) {
-                return 1; //rebate
-            } else if ((raquete.getX() >= x + largura && raquete.getNumeroRaquete() == 1) ||
-                    (raquete.getX() + raquete.getLargura() <= x - largura && raquete.getNumeroRaquete() == 2)) {
+                if (!passou) return 1; //rebate
+                else return 0; // nada
+            } else if (raquete.getX() + raquete.getLargura() <= x - largura) {
                 return 2; //ponto
+            } else if (raquete.getX() < x + largura) {
+                this.passou = true;
+                return 0;
             }
+            
         }
 
         return 0; //nada
@@ -164,11 +173,8 @@ public class Bola {
     public void renderizarBola(Graphics g) {
         g.setColor(Color.WHITE);
         g.fillOval(x, y, largura, altura);
-        
     }
     
-    
-
     public static int converterRange( int inicio_original, int final_original,
             int inicio_novo, int final_novo,int valor) {
         double escala = (double)(final_novo - inicio_novo) / (final_original - inicio_original);

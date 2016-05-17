@@ -1,13 +1,12 @@
-800 // largura da tela
-600 // altura da terra
-25 // largura da raquete
-150 // altura da raquete
-20 // raio da bola
-15 // mбxima velocidade da raquete
-5 // mбxima velocidade da bola
-3 // inclinaзгo da raquete
-3 // tamanho do cromossomo
-30 // tamanho da populaзгo
-1,5 // intervalo entre cada gene
-5 // velocidade do programa (ainda nгo foi implementado)
-3 // rodadas que cada indivнduo deve jogar (falta implementar)
+﻿LARGURA_TELA = 800;
+ALTURA_TELA = 600;  
+RAQUETE_LARGURA = 25;
+RAQUETE_ALTURA = 150;
+BOLA_RAIO = 20;
+MAX_VELOCIDADE_RAQUETE = 15;
+MAX_VELOCIDADE_BOLA   = 5;
+RAQUETE_INCLINACAO = 3;
+MAX_POPULACAO = 30; 
+INTERVALO_GENES = 1.5;
+RODADA = 3;
+MAX_GERACOES = 20;

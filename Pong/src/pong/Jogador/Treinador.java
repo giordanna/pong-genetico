@@ -104,6 +104,7 @@ public class Treinador implements IJogador {
     @Override
     public void resultado(int ponto){
         int fitness = 0;
+        if (total == 0) populacao[atual].setFitness(0);
         
         total++;
         if (ponto > 0){
@@ -118,18 +119,14 @@ public class Treinador implements IJogador {
         fitness += Configuracao.ALTURA_TELA - 3 * ultima_distancia;
         bola_passou = false;
         
-        if (populacao[atual].getFitness() != 0){
-            // faz uma média com o fitness antigo
-            populacao[atual].setFitness(populacao[atual].getFitness() + fitness);
-            populacao[atual].setFitness(populacao[atual].getFitness() / 2);
-        }
-        else{
-            populacao[atual].setFitness(fitness);
-        }
+        // soma
+        populacao[atual].setFitness( populacao[atual].getFitness() + fitness);
         
         contraatacou = 0;
         
         if (total == 3){
+            
+            populacao[atual].setFitness(populacao[atual].getFitness()/3);
             
             try {
                 salvaPopulacao();
